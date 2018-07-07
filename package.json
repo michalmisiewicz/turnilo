@@ -47,7 +47,8 @@
     "tsc": "tsc",
     "lint": "npm-run-all -p lint:*",
     "lint:ts": "tslint -p . --format verbose",
-    "lint:sass": "sass-lint"
+    "lint:sass": "sass-lint",
+    "install": "npm run build"
   },
   "dependencies": {
     "body-parser": "1.18.2",
