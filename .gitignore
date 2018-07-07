@@ -2,3 +2,7 @@
 /node_modules/
 *.iml
 *.tgz
+*.js.map
+*.fixtures.js
+*.mocha.js
+*.mock.js
