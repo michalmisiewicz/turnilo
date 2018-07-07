@@ -148,10 +148,13 @@ export class CubeHeaderBar extends React.Component<CubeHeaderBarProps, CubeHeade
     const { hilukMenuOpenOn } = this.state;
     if (!hilukMenuOpenOn) return null;
 
-    const externalViews: ExternalView[] = Boolean(customization) ? customization.externalViews : null;
-    const externalSystem: ExternalSystem = Boolean(customization) ? customization.externalSystem : null;
+    const externalViews: ExternalView[] = customization ? customization.externalViews : null;
+    const externalSystem: ExternalSystem = customization ? customization.externalSystem : null;
+    const isExportToExternalSystemEnable = customization && customization.externalSystem && customization.externalSystem.enabled;
+    const redirectLink = customization && customization.externalSystem && customization.externalSystem.redirectLink ?
+      customization.externalSystem.redirectLink : null;
 
-    let onAddEssenceToCollectionClick: any = null;
+    let onAddEssenceToCollectionClick: () => void = null;
     if (stateful) {
       onAddEssenceToCollectionClick = () => {
         this.setState({
@@ -171,6 +174,8 @@ export class CubeHeaderBar extends React.Component<CubeHeaderBarProps, CubeHeade
       openViewDefinitionModal={openViewDefinitionModal}
       externalViews={externalViews}
       externalSystem={externalSystem}
+      isExportToExternalSystemEnabled={isExportToExternalSystemEnable}
+      redirectLink={redirectLink}
       getDownloadableDataset={getDownloadableDataset}
       addEssenceToCollection={onAddEssenceToCollectionClick}
     />;

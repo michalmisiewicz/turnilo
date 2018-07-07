@@ -34,6 +34,7 @@ describe.skip("HilukMenu", () => {
         onClose={null}
         openOn={openOn}
         getCubeViewHash={() => "http://stackoverflow.com/"}
+        isExportToExternalSystemEnabled={false}
         openRawDataModal={null}
         openViewDefinitionModal={null}
       />

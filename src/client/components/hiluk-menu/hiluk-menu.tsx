@@ -39,6 +39,8 @@ export interface HilukMenuProps {
   openRawDataModal: Fn;
   openViewDefinitionModal: Fn;
   externalSystem?: ExternalSystem;
+  isExportToExternalSystemEnabled: boolean;
+  redirectLink?: string;
   externalViews?: ExternalView[];
   getDownloadableDataset?: () => Dataset;
   addEssenceToCollection?: () => void;
@@ -47,7 +49,6 @@ export interface HilukMenuProps {
 export interface HilukMenuState {
   url?: string;
   fixedTimeUrl?: string;
-  openExternalSystemView?: boolean;
 }
 
 export class HilukMenu extends React.Component<HilukMenuProps, HilukMenuState> {
@@ -56,8 +57,7 @@ export class HilukMenu extends React.Component<HilukMenuProps, HilukMenuState> {
     super(props);
     this.state = {
       url: null,
-      fixedTimeUrl: null,
-      openExternalSystemView: null
+      fixedTimeUrl: null
     };
   }
 
@@ -67,22 +67,11 @@ export class HilukMenu extends React.Component<HilukMenuProps, HilukMenuState> {
     const withPrefix = true;
     const url = getCubeViewHash(essence, withPrefix);
     const fixedTimeUrl = essence.filter.isRelative() ? getCubeViewHash(essence.convertToSpecificFilter(timekeeper), withPrefix) : null;
-    const openExternalSystemView = false;
 
     this.setState({
       url,
-      fixedTimeUrl,
-      openExternalSystemView
+      fixedTimeUrl
     });
-  }
-
-  componentWillUpdate(nextProps: Readonly<HilukMenuProps>, nextState: Readonly<HilukMenuState>, nextContext: any): void {
-    if (nextState.openExternalSystemView) {
-      const { redirectLink } = nextProps.externalSystem;
-      const target = "_self";
-      const win = window.open(redirectLink, target);
-      win.focus();
-    }
   }
 
   openRawDataModal() {
@@ -114,23 +103,25 @@ export class HilukMenu extends React.Component<HilukMenuProps, HilukMenuState> {
   }
 
   onExportToExternalSystem() {
-    const { essence } = this.props;
+    const { essence, redirectLink } = this.props;
     const viewDefinitionPrinter = new ViewDefinitionPrinter(essence.dataCube.name, DEFAULT_VIEW_DEFINITION_VERSION, defaultDefinitionConverter.toViewDefinition(essence));
     const viewDefinitionAsJson = viewDefinitionPrinter.printAsJson();
-    const errorHandler = (message: string) => Notifier.failure("Export to external system failed", message);
 
-    exportToExternalSystem(viewDefinitionAsJson, errorHandler)
+    exportToExternalSystem(viewDefinitionAsJson)
       .then(() => {
-        const externalSystem = this.props.externalSystem;
-
-        if (externalSystem && externalSystem.redirectLink) {
-          this.setState({ openExternalSystemView: true });
+        if (redirectLink) {
+          const target = "_self";
+          const win = window.open(redirectLink, target);
+          win.focus();
         }
-      });
+      })
+      .catch((response: Response) => response.json()
+        .then(json => Notifier.failure("Export to external system failed", json.message))
+      );
   }
 
   render() {
-    const { openOn, onClose, externalSystem, externalViews, essence, getDownloadableDataset, addEssenceToCollection } = this.props;
+    const { openOn, onClose, isExportToExternalSystemEnabled, externalViews, essence, getDownloadableDataset, addEssenceToCollection } = this.props;
     const { url, fixedTimeUrl } = this.state;
 
     const shareOptions: JSX.Element[] = [];
@@ -187,7 +178,7 @@ export class HilukMenu extends React.Component<HilukMenuProps, HilukMenuState> {
       });
     }
 
-    if (externalSystem && externalSystem.enabled) {
+    if (isExportToExternalSystemEnabled) {
       const title = STRINGS.exportToExternalSystem;
 
       shareOptions.push(<li

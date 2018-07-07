@@ -38,9 +38,9 @@ export class ExternalSystem implements Instance<ExternalSystemValue, ExternalSys
     });
   }
 
-  enabled: boolean;
-  exportTimeout: number;
-  redirectLink: string;
+  public enabled: boolean;
+  public exportTimeout: number;
+  public redirectLink: string;
 
   constructor(parameters: ExternalSystemValue) {
     const { enabled, exportTimeout, redirectLink } = parameters;
@@ -64,9 +64,9 @@ export class ExternalSystem implements Instance<ExternalSystemValue, ExternalSys
   toJS(): ExternalSystemValue {
     const js: ExternalSystemValue = {
       enabled: this.enabled,
-      exportTimeout: this.exportTimeout
+      exportTimeout: this.exportTimeout,
+      redirectLink: this.redirectLink
     };
-    if (this.redirectLink) js.redirectLink = this.redirectLink;
     return js;
   }
 
@@ -77,9 +77,9 @@ export class ExternalSystem implements Instance<ExternalSystemValue, ExternalSys
   valueOf(): ExternalSystemValue {
     const value: ExternalSystemValue = {
       enabled: this.enabled,
-      exportTimeout: this.exportTimeout
+      exportTimeout: this.exportTimeout,
+      redirectLink: this.redirectLink
     };
-    if (this.redirectLink) value.redirectLink = this.redirectLink;
     return value;
   }
 }

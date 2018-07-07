@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-export function exportToExternalSystem(viewDefinition: string, errorHandler: (message: string) => void): Promise<any> {
+export function exportToExternalSystem(viewDefinition: string): Promise<any> {
   return fetch("/external", {
     method: "POST",
     headers: {
@@ -23,12 +23,7 @@ export function exportToExternalSystem(viewDefinition: string, errorHandler: (me
     body: viewDefinition
   })
     .then(response => {
-      if (!response.ok) {
-        return Promise.reject(
-         response.json()
-          .then(res => errorHandler(res.message))
-        );
-      }
-      return Promise.resolve(response);
+      if (response.ok) return response;
+      throw response;
     });
 }

@@ -17,17 +17,11 @@
 import { ViewDefinition, ViewDefinitionVersion } from "../../../common/view-definitions";
 
 export class ViewDefinitionPrinter {
-  private dataCubeName: string;
-  private viewDefinitionVersion: ViewDefinitionVersion;
-  private viewDefinition: ViewDefinition;
 
-  constructor(dataCubeName: string, viewDefinitionVersion: ViewDefinitionVersion, viewDefinition: ViewDefinition) {
-    this.dataCubeName = dataCubeName;
-    this.viewDefinitionVersion = viewDefinitionVersion;
-    this.viewDefinition = viewDefinition;
-  }
+  constructor(private dataCubeName: string, private viewDefinitionVersion: ViewDefinitionVersion, private viewDefinition: ViewDefinition) {}
 
   public printAsJson(): string {
-    return JSON.stringify(this, null, 2);
+    const { dataCubeName, viewDefinition, viewDefinitionVersion } = this;
+    return JSON.stringify({ dataCubeName, viewDefinition, viewDefinitionVersion });
   }
 }
