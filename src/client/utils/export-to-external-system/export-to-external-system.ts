@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
+import axios from "axios";
+
 export function exportToExternalSystem(viewDefinition: string): Promise<any> {
-  return fetch("/external", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: viewDefinition
-  })
+  const headers = {
+    "Content-Type": "application/json"
+  };
+
+  return axios.post("/external", viewDefinition, { headers })
     .then(response => {
-      if (response.ok) return response;
-      throw response;
+      return response.data;
     });
 }
